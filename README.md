@@ -10,11 +10,21 @@ def build(c):
 ```
 don't assume everyone has go installed, run the task in a container
 
-```python 
+```python
 @container("go:1.20")
 @task
 def build(c):
     c.run(f"go build")
+```
+
+## Specify the container runner program to use
+```sh
+CONTAINER_INVOKE_PROGRAM="podman" inv build
+```
+
+## Temporarily invoke tasks on host (not in containers)
+```sh
+CONTAINER_INVOKE_ON_HOST=1 inv build
 ```
 
 ## TODO Run part of your task within one or more containers
@@ -32,12 +42,6 @@ def super_task(c):
         c.run("make html")
 ```
 It's likely that this particular example would be better off split into several tasks using `@container` and using invokes task dependencies.
-
-## TODO specify container program
-```sh
-INVOKE_CONTAINERS_PROGRAM="podman" \
-inv build
-```
 
 ## TODO specify shared environment
 By default each `c.run(COMMAND)` runs in it's own docker container which gets torn down between calls. ex:

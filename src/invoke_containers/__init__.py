@@ -2,11 +2,9 @@ import os
 import shlex
 import shutil
 from functools import wraps
-from typing import Any, Callable, Dict, List, Mapping, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 from invoke import Context, Local
-
-from invoke.config import DataProxy
 from invoke.tasks import Task
 
 from invoke_containers import env
@@ -74,6 +72,14 @@ def create_docker_volume_options(volumes: Volumes) -> List[str]:
     return [f"-v{volume}" for volume in as_volume_strs(volumes)]
 
 
+def should_run_in_container() -> bool:
+    """
+    Determine if we should run the task in a container.
+    Provides an option to run the task on the host instead of in a container.
+    """
+    return not env.get_boolean(env.INVOKE_ON_HOST)
+
+
 class ContainerRunner(Local):
     """
     pyinvoke seems to hardcode the runner to a local runner. Create a local
@@ -83,6 +89,12 @@ class ContainerRunner(Local):
     """
 
     def start(self, command: str, shell: str, env: Dict[str, Any]) -> None:
+        if should_run_in_container():
+            self.start_in_container(command, shell, env)
+        else:
+            super().start(command, shell, env)
+
+    def start_in_container(self, command: str, shell: str, env: Dict[str, Any]) -> None:
         container = self.context.config.container
         container_program = discover_container_program()
         work_dir = "/work"
