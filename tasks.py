@@ -1,7 +1,4 @@
-from typing import Optional
-
 from invoke import task
-from invoke_containers import container
 
 
 @task
@@ -30,4 +27,12 @@ def mypy(c):
 @task
 def lint(c):
     """Lint code."""
-    c.run("ufmt check")
+    c.run("ufmt check", warn=True)
+    c.run("unimport --check --gitignore", warn=True)
+    c.run("pyflakes src tests examples tasks.py", warn=True)
+
+
+@task
+def unimport(c):
+    """Remove unused imports."""
+    c.run("unimport --gitignore")

@@ -1,8 +1,6 @@
 from pathlib import Path
 from subprocess import PIPE, Popen
-from typing import List, Mapping, NamedTuple, Optional, Sequence, Tuple, Union
-
-import pytest
+from typing import Tuple, Union
 
 TESTING_DIR = Path(__file__).parent
 SRC_DIR = TESTING_DIR.parent

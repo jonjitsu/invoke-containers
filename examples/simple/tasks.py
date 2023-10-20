@@ -9,28 +9,28 @@ from invoke_containers import container
 @task
 def version(c):
     """Print the terraform version."""
-    c.run(f"terraform version")
+    c.run("terraform version")
 
 
 @task
 @container("hashicorp/terraform:1.6")
 def init(c):
     """Initialize terraform."""
-    c.run(f"terraform init")
+    c.run("terraform init")
 
 
 @task
 @container("hashicorp/terraform:1.6")
 def apply(c):
     """Apply terraform."""
-    c.run(f"terraform apply -auto-approve")
+    c.run("terraform apply -auto-approve")
 
 
 @task
 @container("hashicorp/terraform:1.6")
 def output(c):
     """Print terraform output."""
-    c.run(f"terraform output")
+    c.run("terraform output")
 
 
 @task
@@ -43,7 +43,7 @@ def test(c):
 @container("hashicorp/terraform:1.6")
 def destroy(c):
     """Destroy terraform."""
-    c.run(f"terraform apply -destroy -auto-approve")
+    c.run("terraform apply -destroy -auto-approve")
 
 
 @task
@@ -72,7 +72,7 @@ def e2e(c):
 
 
 if __name__ == "__main__":
-    from invoke import Collection, Program
+    from invoke import Program
 
     program = Program(
         name="Invoke",

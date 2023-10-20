@@ -6,7 +6,7 @@ groups = ["default", "dev"]
 cross_platform = true
 static_urls = false
 lock_version = "4.3"
-content_hash = "sha256:5d0eba3606ed3557772bceb22528a83030d58d2403ad174e679c8418ce7e73d0"
+content_hash = "sha256:3bedf0c18c172cec0e40c7aee5b9f11deb919eb3d32f2201cdeaaf6cfe529fe8"
 
 [[package]]
 name = "attrs"
@@ -16,6 +16,20 @@ summary = "Classes Without Boilerplate"
 files = [
     {file = "attrs-23.1.0-py3-none-any.whl", hash = "sha256:1f28b4522cdc2fb4256ac1a020c78acf9cba2c6b461ccd2c126f3aa8e8335d04"},
     {file = "attrs-23.1.0.tar.gz", hash = "sha256:6279836d581513a26f1bf235f9acd333bc9115683f14f7e8fae46c98fc50e015"},
+]
+
+[[package]]
+name = "autoflake"
+version = "2.2.1"
+requires_python = ">=3.8"
+summary = "Removes unused imports and unused variables"
+dependencies = [
+    "pyflakes>=3.0.0",
+    "tomli>=2.0.1; python_version < \"3.11\"",
+]
+files = [
+    {file = "autoflake-2.2.1-py3-none-any.whl", hash = "sha256:265cde0a43c1f44ecfb4f30d95b0437796759d07be7706a2f70e4719234c0f79"},
+    {file = "autoflake-2.2.1.tar.gz", hash = "sha256:62b7b6449a692c3c9b0c916919bbc21648da7281e8506bcf8d3f8280e431ebc1"},
 ]
 
 [[package]]
@@ -102,8 +116,8 @@ files = [
 
 [[package]]
 name = "libcst"
-version = "1.1.0"
-requires_python = ">=3.8"
+version = "0.4.10"
+requires_python = ">=3.7"
 summary = "A concrete syntax tree with AST-like properties for Python 3.5, 3.6, 3.7, 3.8, 3.9, and 3.10 programs."
 dependencies = [
     "pyyaml>=5.2",
@@ -111,25 +125,19 @@ dependencies = [
     "typing-inspect>=0.4.0",
 ]
 files = [
-    {file = "libcst-1.1.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:63f75656fd733dc20354c46253fde3cf155613e37643c3eaf6f8818e95b7a3d1"},
-    {file = "libcst-1.1.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:8ae11eb1ea55a16dc0cdc61b41b29ac347da70fec14cc4381248e141ee2fbe6c"},
-    {file = "libcst-1.1.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:4bc745d0c06420fe2644c28d6ddccea9474fb68a2135904043676deb4fa1e6bc"},
-    {file = "libcst-1.1.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8c1f2da45f1c45634090fd8672c15e0159fdc46853336686959b2d093b6e10fa"},
-    {file = "libcst-1.1.0-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:003e5e83a12eed23542c4ea20fdc8de830887cc03662432bb36f84f8c4841b81"},
-    {file = "libcst-1.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:3ebbb9732ae3cc4ae7a0e97890bed0a57c11d6df28790c2b9c869f7da653c7c7"},
-    {file = "libcst-1.1.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:d68c34e3038d3d1d6324eb47744cbf13f2c65e1214cf49db6ff2a6603c1cd838"},
-    {file = "libcst-1.1.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:9dffa1795c2804d183efb01c0f1efd20a7831db6a21a0311edf90b4100d67436"},
-    {file = "libcst-1.1.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:cc9b6ac36d7ec9db2f053014ea488086ca2ed9c322be104fbe2c71ca759da4bb"},
-    {file = "libcst-1.1.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:78b7a38ec4c1c009ac39027d51558b52851fb9234669ba5ba62283185963a31c"},
-    {file = "libcst-1.1.0-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:5297a16e575be8173185e936b7765c89a3ca69d4ae217a4af161814a0f9745a7"},
-    {file = "libcst-1.1.0-cp311-cp311-win_amd64.whl", hash = "sha256:7ccaf53925f81118aeaadb068a911fac8abaff608817d7343da280616a5ca9c1"},
-    {file = "libcst-1.1.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:75816647736f7e09c6120bdbf408456f99b248d6272277eed9a58cf50fb8bc7d"},
-    {file = "libcst-1.1.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:c8f26250f87ca849a7303ed7a4fd6b2c7ac4dec16b7d7e68ca6a476d7c9bfcdb"},
-    {file = "libcst-1.1.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:2d37326bd6f379c64190a28947a586b949de3a76be00176b0732c8ee87d67ebe"},
-    {file = "libcst-1.1.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e3d8cf974cfa2487b28f23f56c4bff90d550ef16505e58b0dca0493d5293784b"},
-    {file = "libcst-1.1.0-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:82d1271403509b0a4ee6ff7917c2d33b5a015f44d1e208abb1da06ba93b2a378"},
-    {file = "libcst-1.1.0-cp312-cp312-win_amd64.whl", hash = "sha256:bca1841693941fdd18371824bb19a9702d5784cd347cb8231317dbdc7062c5bc"},
-    {file = "libcst-1.1.0.tar.gz", hash = "sha256:0acbacb9a170455701845b7e940e2d7b9519db35a86768d86330a0b0deae1086"},
+    {file = "libcst-0.4.10-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:8fa0ec646ed7bce984d0ee9dbf514af278050bdb16a4fb986e916ace534eebc6"},
+    {file = "libcst-0.4.10-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:3cb3b7821eac00713844cda079583230c546a589b22ed5f03f2ddc4f985c384b"},
+    {file = "libcst-0.4.10-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e7acfa747112ae40b032739661abd7c81aff37191294f7c2dab8bbd72372e78f"},
+    {file = "libcst-0.4.10-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1312e293b864ef3cb4b09534ed5f104c2dc45b680233c68bf76237295041c781"},
+    {file = "libcst-0.4.10-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:76884b1afe475e8e68e704bf26eb9f9a2867029643e58f2f26a0286e3b6e998e"},
+    {file = "libcst-0.4.10-cp310-cp310-win_amd64.whl", hash = "sha256:1069b808a711db5cd47538f27eb2c73206317aa0d8b5a3500b23aab24f86eb2e"},
+    {file = "libcst-0.4.10-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:50be085346a35812535c7f876319689e15a7bfd1bd8efae8fd70589281d944b6"},
+    {file = "libcst-0.4.10-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:bb9f10e5763e361e8bd8ff765fc0f1bcf744f242ff8b6d3e50ffec4dda3972ac"},
+    {file = "libcst-0.4.10-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:cfeeabb528b5df7b4be1817b584ce79e9a1a66687bd72f6de9c22272462812f1"},
+    {file = "libcst-0.4.10-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:5648aeae8c90a2abab1f7b1bf205769a0179ed2cfe1ea7f681f6885e87b8b193"},
+    {file = "libcst-0.4.10-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:a144f20aff4643b00374facf8409d30c7935db8176e5b2a07e1fd44004db2c1f"},
+    {file = "libcst-0.4.10-cp311-cp311-win_amd64.whl", hash = "sha256:a10adc2e8ea2dda2b70eabec631ead2fc4a7a7ab633d6c2b690823c698b8431a"},
+    {file = "libcst-0.4.10.tar.gz", hash = "sha256:b98a829d96e8b209fb761b00cd1bacc27c70eae77d00e57976e5ae2c718c3f81"},
 ]
 
 [[package]]
@@ -223,6 +231,16 @@ summary = "plugin and hook calling mechanisms for python"
 files = [
     {file = "pluggy-1.3.0-py3-none-any.whl", hash = "sha256:d89c696a773f8bd377d18e5ecda92b7a3793cbe66c87060a6fb58c7b6e1061f7"},
     {file = "pluggy-1.3.0.tar.gz", hash = "sha256:cf61ae8f126ac6f7c451172cf30e3e43d3ca77615509771b3a984a0730651e12"},
+]
+
+[[package]]
+name = "pyflakes"
+version = "3.1.0"
+requires_python = ">=3.8"
+summary = "passive checker of Python programs"
+files = [
+    {file = "pyflakes-3.1.0-py2.py3-none-any.whl", hash = "sha256:4132f6d49cb4dae6819e5379898f2b8cce3c5f23994194c24b77d5da2e36f774"},
+    {file = "pyflakes-3.1.0.tar.gz", hash = "sha256:a0aae034c444db0071aa077972ba4768d40c830d9539fd45bf4cd3f8f6992efc"},
 ]
 
 [[package]]
@@ -368,6 +386,21 @@ dependencies = [
 files = [
     {file = "ufmt-2.2.0-py3-none-any.whl", hash = "sha256:8ffa419091932b74f137d95cdd4e25970f5aa0d5e5d42bf6c5ddf968d634f529"},
     {file = "ufmt-2.2.0.tar.gz", hash = "sha256:4a4f9a549c4a34697a1ab293c093ac6b4d3afb3ad5345895c0d3bbfeb3cf739d"},
+]
+
+[[package]]
+name = "unimport"
+version = "1.0.0"
+requires_python = ">=3.6"
+summary = "The ultimate linter and formatter for removing unused import statements in your code."
+dependencies = [
+    "libcst<1,>=0.3.7; python_version >= \"3.9\"",
+    "pathspec<1,>=0.10.1; python_version >= \"3.7\"",
+    "toml<1,>=0.9.0",
+]
+files = [
+    {file = "unimport-1.0.0-py3-none-any.whl", hash = "sha256:7fe121ef4bd0358246adb0b962800f2edba31e681370c063afc56d62ebf370ae"},
+    {file = "unimport-1.0.0.tar.gz", hash = "sha256:c2c3a13a7a7eeefd2b4fb4eb99440a6a872a3f5139d505f2f3fbf03c97b57b1e"},
 ]
 
 [[package]]
