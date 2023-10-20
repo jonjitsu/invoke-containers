@@ -1,7 +1,9 @@
 import os
 
+import pytest
+
 from _testing.environment import Environment
-from invoke_containers import discover_container_program
+from invoke_containers import as_volume_strs, discover_container_program
 from invoke_containers.env import CONTAINER_PROGRAM
 
 
@@ -35,3 +37,18 @@ def test_discover_container_program_uses_CONTAINER_PROGRAM_env_var_on_path():
         environment.create_executable(bin)
         os.environ[CONTAINER_PROGRAM] = bin
         assert discover_container_program() == str(environment.temppath / bin)
+
+
+@pytest.mark.parametrize(
+    ("volumes", "expected"),
+    [
+        (["/src:/dest"], ["/src:/dest"]),
+        (["/src:/dest:ro"], ["/src:/dest:ro"]),
+        ({"/src": "/dest:ro"}, ["/src:/dest:ro"]),
+        ({"/src": ("/dest", "ro")}, ["/src:/dest:ro"]),
+        ([("/src", "/dest")], ["/src:/dest"]),
+        ([("/src", "/dest", "ro")], ["/src:/dest:ro"]),
+    ],
+)
+def test_as_volume_strs(volumes, expected):
+    assert as_volume_strs(volumes) == expected

@@ -2,9 +2,11 @@ import os
 import shlex
 import shutil
 from functools import wraps
-from typing import Any, Callable, Dict, Optional, Union
+from typing import Any, Callable, Dict, List, Mapping, Optional, Tuple, Union
 
 from invoke import Context, Local
+
+from invoke.config import DataProxy
 from invoke.tasks import Task
 
 from invoke_containers import env
@@ -43,6 +45,35 @@ def create_docker_env_options(env: Dict[str, str]):
     return [f"-e{key}={value}" for key, value in env.items()]
 
 
+# "/src", "/dest"
+VolumeFromTo = Tuple[str, str]
+# "/src", "/dest", "ro"
+VolumeFromToMode = Tuple[str, str, str]
+VolumeList = List[Union[str, VolumeFromTo, VolumeFromToMode]]
+#  "/dest", "ro"
+VolumeToMode = Tuple[str, str]
+VolumeMappingValue = Union[str, VolumeToMode]
+VolumeMapping = Dict[str, VolumeMappingValue]
+Volumes = Union[VolumeMapping, VolumeList]
+
+
+def as_volume_strs(volumes: Volumes) -> List[str]:
+    def join(value) -> str:
+        if isinstance(value, tuple):
+            return ":".join(value)
+        return value
+
+    if hasattr(volumes, "items"):
+        return [f"{key}:{join(value)}" for key, value in volumes.items()]
+    if isinstance(volumes, list):
+        return [join(value) for value in volumes]
+    raise ValueError(f"Unexpected volumes type: {type(volumes)}")
+
+
+def create_docker_volume_options(volumes: Volumes) -> List[str]:
+    return [f"-v{volume}" for volume in as_volume_strs(volumes)]
+
+
 class ContainerRunner(Local):
     """
     pyinvoke seems to hardcode the runner to a local runner. Create a local
@@ -52,6 +83,7 @@ class ContainerRunner(Local):
     """
 
     def start(self, command: str, shell: str, env: Dict[str, Any]) -> None:
+        container = self.context.config.container
         container_program = discover_container_program()
         work_dir = "/work"
         cwd = os.getcwd()
@@ -66,9 +98,10 @@ class ContainerRunner(Local):
         ]
         if self.using_pty:
             cmd.append("-it")
-        cmd.extend(create_docker_env_options(self.context.config.container.env))
+        cmd.extend(create_docker_env_options(container["env"]))
+        cmd.extend(create_docker_volume_options(container["volumes"]))
         cmd += [
-            self.context.config.container.image,
+            container["image"],
             "-c",
             command,
         ]
@@ -76,7 +109,12 @@ class ContainerRunner(Local):
         super().start(proxy_command, shell, env)
 
 
-def container(image: str, env: Optional[Dict] = None) -> Callable:
+def container(
+    image: str,
+    env: Optional[Dict] = None,
+    volumes: Optional[Volumes] = None,
+    work_dir: str = "/task",
+) -> Callable:
     """
     Run invoke tasks in a container.
 
@@ -88,6 +126,13 @@ def container(image: str, env: Optional[Dict] = None) -> Callable:
     """
     if env is None:
         env = {}
+    cwd = os.getcwd()
+    if volumes is None:
+        volumes = {}
+    if isinstance(volumes, list):
+        volumes.append((cwd, work_dir))
+    else:
+        volumes[cwd] = work_dir
 
     def create_proxy(func: Callable) -> Callable:
         """
@@ -103,6 +148,7 @@ def container(image: str, env: Optional[Dict] = None) -> Callable:
                 c.config.container = {}
             c.config.container.image = image
             c.config.container.env = env
+            c.config.container.volumes = volumes
             return func(c, *args, **kwargs)
 
         return proxy
