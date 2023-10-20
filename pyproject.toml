@@ -1,10 +1,10 @@
 
 [project]
 name = "invoke-containers"
-version = "0.1.0"
+version = "0.2.0"
 description = "Invoke your tasks within containers."
 authors = [
-    {name = "jonjitsu", email = "github@jonathanwillis.ca"},
+    {name = "jonjitsu", email = "jonjitsu@codewarrior.ca"},
 ]
 dependencies = [
     "invoke>=2.2.0",
