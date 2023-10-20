@@ -1,7 +1,7 @@
 import os
 import shlex
 import shutil
-from functools import lru_cache, wraps
+from functools import wraps
 from typing import Any, Callable, Dict, Optional, Union
 
 from invoke import Context, Local
@@ -10,18 +10,14 @@ from invoke.tasks import Task
 from invoke_containers import env
 
 
-@lru_cache
-def discover_container_program(environ: Optional[Dict[str, str]] = None) -> str:
+def discover_container_program() -> str:
     """
     Figure out which container program to use. Allow specifying a program
     via the env.CONTAINER_PROGRAM environment variable.
     env.CONTAINER_PROGRAM can be a relative or absolute path to a
     program or the name of a program that can be found on the path.
     """
-    if environ is None:
-        environ = dict(os.environ)
-
-    maybe_program: Optional[str] = environ.get(env.CONTAINER_PROGRAM)
+    maybe_program: Optional[str] = os.environ.get(env.CONTAINER_PROGRAM)
     if maybe_program:
         if os.path.exists(maybe_program):
             return maybe_program
@@ -52,7 +48,7 @@ class ContainerRunner(Local):
     """
 
     def start(self, command: str, shell: str, env: Dict[str, Any]) -> None:
-        proxy = self.context.config.container.proxy
+        image = self.context.config.container.image
         container_program = discover_container_program()
         work_dir = "/work"
         cwd = os.getcwd()
@@ -68,7 +64,7 @@ class ContainerRunner(Local):
         if self.using_pty:
             cmd.append("-it")
         cmd += [
-            proxy.image,
+            image,
             "-c",
             command,
         ]
@@ -76,35 +72,46 @@ class ContainerRunner(Local):
         super().start(proxy_command, shell, env)
 
 
-def create_proxy(func: Callable, container_proxy: "ContainerProxy") -> Callable:
-    @wraps(func)
-    def proxy(c: Context, *args, **kwargs):
-        c.config.runners.local = ContainerRunner
-        if "container" not in c.config:
-            c.config.container = {}
-        c.config.container.proxy = container_proxy
-        return func(c, *args, **kwargs)
-
-    return proxy
-
-
-class ContainerProxy:
+def container(image: str) -> Callable:
     """
-    @ContainerProxy("go:1.20")
+    Run invoke tasks in a container.
+
+    Example usage:
     @task
+    @container("go:1.20")
     def build(c):
         c.run("go build -o myapp")
     """
 
-    def __init__(self, image: Optional[str] = None):
-        self.image = image
+    def create_proxy(func: Callable) -> Callable:
+        """
+        Proxy the invoke task execution in order to override the runner
+        with a container runner. Store configuration for the container
+        runner on the config object.
+        """
 
-    def __call__(self, image: Union[Callable, Task], *args, **kwargs):
-        """"""
-        if isinstance(image, Task):
-            image.body = create_proxy(image.body, self)
-            return image
-        return create_proxy(image, self)
+        @wraps(func)
+        def proxy(c: Context, *args, **kwargs):
+            c.config.runners.local = ContainerRunner
+            if "container" not in c.config:
+                c.config.container = {}
+            c.config.container.image = image
+            return func(c, *args, **kwargs)
 
+        return proxy
 
-container = ContainerProxy
+    def decorator(task: Union[Callable, Task]):
+        """
+        Make adjustments depending on if the @container decorator is
+        used before or after the @task decorator.
+
+        If @container is used before @task decorator then we receive a
+        Task object and need to proxy the task.body which is where the
+        users function is stored.
+        """
+        if isinstance(task, Task):
+            task.body = create_proxy(task.body)
+            return task
+        return create_proxy(task)
+
+    return decorator

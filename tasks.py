@@ -7,7 +7,13 @@ def test_examples(c):
     c.run("pytest -vv tests/examples/")
 
 
-@task(test_examples)
+@task
+def test_unit(c):
+    """Test all examples."""
+    c.run("pytest -vv tests/unit/")
+
+
+@task(test_examples, test_unit)
 def test(c):
     """Run all tests."""
 
