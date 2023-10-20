@@ -1,4 +1,8 @@
 name: release
+on:
+  release:
+    types: [published]
+
 jobs:
   pypi-publish:
     name: upload release to PyPI
