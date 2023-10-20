@@ -39,6 +39,10 @@ def discover_container_program() -> str:
     )
 
 
+def create_docker_env_options(env: Dict[str, str]):
+    return [f"-e{key}={value}" for key, value in env.items()]
+
+
 class ContainerRunner(Local):
     """
     pyinvoke seems to hardcode the runner to a local runner. Create a local
@@ -48,7 +52,6 @@ class ContainerRunner(Local):
     """
 
     def start(self, command: str, shell: str, env: Dict[str, Any]) -> None:
-        image = self.context.config.container.image
         container_program = discover_container_program()
         work_dir = "/work"
         cwd = os.getcwd()
@@ -63,8 +66,9 @@ class ContainerRunner(Local):
         ]
         if self.using_pty:
             cmd.append("-it")
+        cmd.extend(create_docker_env_options(self.context.config.container.env))
         cmd += [
-            image,
+            self.context.config.container.image,
             "-c",
             command,
         ]
@@ -72,7 +76,7 @@ class ContainerRunner(Local):
         super().start(proxy_command, shell, env)
 
 
-def container(image: str) -> Callable:
+def container(image: str, env: Optional[Dict] = None) -> Callable:
     """
     Run invoke tasks in a container.
 
@@ -82,6 +86,8 @@ def container(image: str) -> Callable:
     def build(c):
         c.run("go build -o myapp")
     """
+    if env is None:
+        env = {}
 
     def create_proxy(func: Callable) -> Callable:
         """
@@ -96,6 +102,7 @@ def container(image: str) -> Callable:
             if "container" not in c.config:
                 c.config.container = {}
             c.config.container.image = image
+            c.config.container.env = env
             return func(c, *args, **kwargs)
 
         return proxy
