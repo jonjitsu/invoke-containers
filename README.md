@@ -76,3 +76,7 @@ docker container rm CID
 INVOKE_CONTAINERS_REUSE_CONTAINER=1 \
 inv build
 ```
+
+## License
+
+Licensed under the MIT License. See [LICENSE](LICENSE).
